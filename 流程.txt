@@ -1,0 +1,46 @@
+1. 签入 -- 获取参数 -- [执行签入] -- 返回code为0 -- 成功签入;
+								  |--返回retcode 100-002 -- [执行强制签入] -- 返回retcode0 -- 成功签入
+
+2.(server不需要鉴权需要https双向认证)获取鉴权信息:
+	2.1静态鉴权
+		成功签入 -- 在response中的headers获取Set-GUID的header值并存储工号--GUID的对应关系;
+		座席调用其他接口时需要将该guid设置到http请的header中，header的名称必须为guid。AgentGateway会从请求的header中获取guid进行比较，判断是否合法用户，如果不是合法用户，则返回结果码为100-006或000-003。
+	2.2动态鉴权
+		当guid改变时，从事件获取接口的HTTP请求的响应头中获取到名称为Set-GUID的header,更新对应工号的GUID
+
+3.坐席签入后轮询获取单坐席状态,或者利用server轮询获取所有坐席状态,亦可让平台推送所有坐席的状态;
+
+4. [外呼] 前置条件:坐席已经签入系统,并且坐席是置忙态;
+		  参数:called(被叫号码),callappdata(随路数据)等;
+		  成功:{"message":"","retcode":"0","result":"1455885056-1095"},result为话路的唯一标识,
+		  失败:retcode 非0, result没有该项
+		  触发事件:呼出成功,呼出失败,状态改变事件
+
+5. [呼入] 用户呼入（daCallIn）来话，座席收到“AgentState_Busy”事件，表示座席被预占。
+		  座席话机非长通时，座席收到“AgentOther_PhoneAlerting”事件，表示座席话机振铃。
+		  摘机成功后，座席收到“AgentOther_PhoneOffhook”事件。
+		  座席收到“AgentEvent_Ringing”后，表示收到用户呼入请求。
+		  座席调用应答（doAnswerCall）接口应答来话成功后，座席收到“AgentEvent_Talking”表示通话建立成功.
+		  自动应答:坐席摘机成功时会受到AgentEvent_Auto_Answer表示系统自动应答成功
+		  非自动应答:会受到AgentEvent_Ringing事件,表示系统有电话呼入等待应答;座席设置非自动应答时，用户呼入来话后在座席应答前，需要知道呼叫来自哪个技能队列，用户的号码是什么就需要[查询应答来话前呼叫信息]获取来电话来自哪个技能组,来电号码等;随后调用
+		  应答接口:
+		  参数:坐席工号
+		  成功:retcode:0
+		  失败:retcode 非0
+		  触发事件:AgentEvent_Talking,保持，静音，咨询，转接，会议，挂机可用
+
+6. [保持] 前置:坐席已经进入通话状态
+		  参数:坐席工号
+		  成功:retcode:0
+		  失败:retcode 非0
+		  成功事件:AgentEvent_Hold保持成功
+
+7. [取消保持] 前置:坐席已经进入保持状态
+		  	  参数:坐席工号
+		  	  成功:retcode:0
+		  	  失败:retcode 非0
+		  	  成功事件:AgentEvent_Talking保持成功,保持，静音，咨询，转接，会议，挂机可用
+
+8.
+
+

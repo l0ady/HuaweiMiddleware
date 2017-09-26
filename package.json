@@ -1,0 +1,26 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "http": "0.0.0",
+    "koa": "^2.2.0",
+    "koa-body": "^2.3.0",
+    "koa-router": "^7.2.1",
+    "koa-static": "^3.0.0",
+    "koa-views": "^6.0.2",
+    "log4js": "^1.1.1",
+    "mongodb": "^2.2.29",
+    "node-schedule": "^1.2.3",
+    "path": "^0.12.7",
+    "pm2": "^2.6.1",
+    "socket.io": "^2.0.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "l0ady",
+  "license": "ISC"
+}
