@@ -41,6 +41,5 @@
 		  	  失败:retcode 非0
 		  	  成功事件:AgentEvent_Talking保持成功,保持，静音，咨询，转接，会议，挂机可用
 
-8.
 
 
